@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/css/style.css" rel="stylesheet" type="text/css">
+  <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+  <!--BootStrap CSS-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link href="https://cdn.datatables.net/1.12.0/css/dataTables.bootstrap.min.css" rel="stylesheet">
+
+  <!--JQUERY-->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
+  <title>Diciplinas - University</title>
+</head>
+
+<body>
+  <div id="cabecalho">
+    <section class="home-section">
+      <div class="home-content">
+        <i class='bx bx-menu'></i>
+      </div>
+    </section>
+  </div>
+
+  <div class='dashboard'>
+    <div class="dashboard-nav">
+      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src=""> <span>University</span></a></header>
+        <nav class="dashboard-nav-list">
+          <a href="#" class="dashboard-nav-item"><i class="bx bx-grid-alt"></i>Home</a>
+            <div class='dashboard-nav-dropdown'>
+              <a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle">
+                <i class="bx bx-collection"></i>Sistema</a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/alunos_data" class="dashboard-nav-dropdown-item">Alunos</a>
+                  <a href="/professores_data" class="dashboard-nav-dropdown-item">Professores</a>
+            </div>
+            <div class='dashboard-nav-dropdown'>
+              <a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle">
+                <i class="bx bx-book-alt"></i> University</a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/cursos_data" class="dashboard-nav-dropdown-item">Cursos</a>
+                  <a href="/diciplinas_data" class="dashboard-nav-dropdown-item">Diciplinas</a>
+                  <a href="#"class="dashboard-nav-dropdown-item">Semestres</a>
+            </div>
+
+            <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i> Settings </a><a
+                    href="#" class="dashboard-nav-item"><i class="bx bx-user"></i> Profile </a>
+          <div class="nav-item-divider"></div>
+          <a
+                    href="#" class="dashboard-nav-item"><i class="bx bx-log-out"></i> Logout </a>
+        </nav>
+    </div>
+    <div class='dashboard-app'>
+        <header class='dashboard-toolbar'><a href="#!" class="menu-toggle"><i class="bx bx-menu"></i></a></header>
+        <div class='dashboard-content'>
+            <div class='container' style="display: flex; flex-direction:column">
+                <div class='card'>
+                    <div class='card-header'style="background-color: #11101d;">
+                        <h1 style="color:white;">Listagem de Diciplina</h1>
+                        <span id="message"></span>
+                    </div>
+                    <div class='card-body'>
+                        <div class="table-responsive">
+                          <table class="table table-striped- table-condensed" id="diciplinas_data">
+                            <thead>
+                              <tr style="color:#11101d;">
+                                <th>Nome</th>
+                                <th>Professores</th>
+                                <th>Curso Pertencente</th>
+                                <th>N&ordm; Semestre</th>
+                              </tr>
+                            </thead>
+                            <tbody></tbody>
+                          </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <!--FIM Sidebar-->
+
+    <!--Inicio area cadastro-->
+    <div class="content">
+      <table class="table table-striped" id=diciplinas_data">
+      </table>
+    </div>
+  </div>
+
+</body>
+
+</html>
+<script>
+//menu
+const mobileScreen = window.matchMedia("(max-width: 990px )");
+$(document).ready(function () {
+    $(".dashboard-nav-dropdown-toggle").click(function () {
+        $(this).closest(".dashboard-nav-dropdown")
+            .toggleClass("show")
+            .find(".dashboard-nav-dropdown")
+            .removeClass("show");
+        $(this).parent()
+            .siblings()
+            .removeClass("show");
+    });
+    $(".menu-toggle").click(function () {
+        if (mobileScreen.matches) {
+            $(".dashboard-nav").toggleClass("mobile-show");
+        } else {
+            $(".dashboard").toggleClass("dashboard-compact");
+        }
+    });
+});
+
+  $(document).ready(function () {
+
+    load_data();
+
+    function load_data() {
+      $.ajax({
+        url: "http://localhost:3000/diciplinas_data/action",
+        method: "GET",
+        dataType: "JSON",
+        success: function (data) {
+          var html = '';
+          if (data.data.length > 0) {
+            for (var count = 0; count < data.data.length; count++) {
+              html += `
+                            <tr>
+                                <td scope="row">`+ data.data[count].nome + `</td>
+                                <td scope="row">`+ data.data[count].professoreId + `</td>
+                                <td scope="row">`+ data.data[count].cursoId + `</td>
+                                <td scope="row">`+ data.data[count].semestreId + `&ordm; semestre</td>
+                            </tr>
+                            `;
+            }
+          }
+          $('#diciplinas_data tbody').html(html);
+        }
+      });
+    }
+  
+  });
+
+</script>
