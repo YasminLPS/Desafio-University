@@ -260,12 +260,12 @@ $(document).ready(function () {
         data: {id:id},
         dataType: "json",
         success:(data) =>{
-          $('#nome').val(data.nome);
-          $('#bday').val(data.bday);
-          $('#cursos').val(data.cursoId);
-          $('#semestre').val(data.semestreId);
-          $('#matricula').val(data.matricula);
-          $('#id').val(data.id);
+          $('#name').val($(data).parent().parent().find('td:nth-child(1)').html());
+          $('#bday').val($(data).parent().parent().find('td:nth-child(1)').html());
+          $('#cursos').val($(data).parent().parent().find('td:nth-child(1)').html());
+          $('#semestre').val($(data).parent().parent().find('td:nth-child(1)').html());
+          $('#matricula').val($(data).parent().parent().find('td:nth-child(1)').html());
+          $('#id').val($(data).parent().parent().find('td:nth-child(1)').html());
         }
       });
     });
