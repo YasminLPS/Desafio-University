@@ -1,21 +1,25 @@
-var express = require('express');
+const express = require("express");
 
-var router = express.Router();
+const router = express.Router();
 
-var database = require('../database');
+const database = require("../database");
 
-router.get("/", function(request, response, next ){
-    response.render('diciplinas_data');
+router.get("/", function (req, res, next) {
+	res.render("diciplinas_data");
 });
 
-router.get("/action", function(request, response, next ){
-    var query = "SELECT * FROM diciplinas ORDER BY id";
-        
-    database.query(query, function(error, data){
-        response.json({
-            data:data
-        });
-    });  
+router.get("/diciplinas", function (req, res) {
+	var query =
+	"SELECT diciplinas.id, diciplinas.nome, cursos.nome as cursoId, semestres.periodo as semestreId FROM diciplinas";
+query += " INNER JOIN cursos ON cursos.id = diciplinas.cursoId";
+query += " INNER JOIN semestres ON semestres.id = diciplinas.semestreId";
+	database.query(query, function (error, data) {
+		if (error) throw error;
+
+		res.json({
+			data: data,
+		});
+	});
 });
 
 module.exports = router;

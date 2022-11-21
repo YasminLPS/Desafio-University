@@ -21,6 +21,7 @@
     crossorigin="anonymous"></script>
   <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <title>Professores - University</title>
 </head>
 
@@ -35,7 +36,7 @@
 
   <div class='dashboard'>
     <div class="dashboard-nav">
-      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src=""> <span>University</span></a></header>
+      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href="/index"><img src="/images/icon.svg"><span style="margin-left: 1rem;">University</span></a></header>
         <nav class="dashboard-nav-list">
           <a href="#" class="dashboard-nav-item"><i class="bx bx-grid-alt"></i>Home</a>
             <div class='dashboard-nav-dropdown'>
@@ -51,7 +52,6 @@
                 <div class='dashboard-nav-dropdown-menu'>
                   <a href="/cursos_data" class="dashboard-nav-dropdown-item">Cursos</a>
                   <a href="/diciplinas_data" class="dashboard-nav-dropdown-item">Diciplinas</a>
-                  <a href="#"class="dashboard-nav-dropdown-item">Semestres</a>
             </div>
 
             <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i> Settings </a><a
@@ -70,6 +70,7 @@
                 <button type="button" id="add_data" class="btn btn-sm float-end" 
                   style="color: white; background-color: #11101d;">CADASTRAR PROFESSOR</button>
               </div>
+                
                 <div class='card'>
                     <div class='card-header'style="background-color: #11101d;">
                         <h1 style="color:white;">Professores Cadastrados</h1>
@@ -129,25 +130,18 @@
             <input type="date" name="bday" id="bday" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label class="form-lab">Salary</label>
-            <input type="text" size="12" onKeyUp="mascaraMoeda(this, event)" value="" name="salary" id="salary" class="form-control"required>
+            <label class="form-lab">Salario</label>
+            <input type="number" name="salary" id="salary" class="form-control" required>
           </div>
+        </div>
           <div class="mb-3">
             <label class="form-lab">Diciplina</label>
             <select name="diciplina" id="diciplina" class="form-select" required>
-              <option selected>--- Selecione a Diciplina ---</option>
-              <option value="1">Algoritmos e Estruturas de Dados.</option>
-              <option value="2">Arquitetura e Organização de Computadores</option>
-              <option value="3">Computação Gráfica</option>
-              <option value="4">Análise e Projeto de Software</option>
-              <option value="5">Teoria e Prática da Cor</option>
-              <option value="6">Produção Gráfica</option>
-              <option value="7">Estudos de Tradução</option>
-              <option value="8">Desenvolvimento do Uso do Inglês</option>
+              <option value="">--- Selecione a Diciplina ---</option>
             </select>
           </div>
-        </div>
         <div class="modal-footer">
+          <input type="hidden" name="id" id="id">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
           <button type="submit" class="btn" style="background-color: #11101d; color: white;"
             id="action_button">Cadastrar</button>
@@ -156,29 +150,51 @@
     </div>
   </div>
 </div>
+<!--MODAL EDIÇÂO-->
+<div class="modal" tabindex="-1" id="edit_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="post" id="edit_professores_form">
+        <div class="modal-header">
+          <h5 class="modal-title" id="edit_modal_title" style="color: #11101d;">Editar Professor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-lab">Nome Completo</label>
+            <input type="text" name="edit_professores_nome" id="edit_professores_nome" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Data de Nascimento</label>
+            <input type="date" name="edit_professores_bday" id="edit_professores_bday" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Salario</label>
+            <input name="edit_professores_salary" id="edit_professores_salary" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Diciplinas</label>
+            <select name="edit_professores_diciplina" id="edit_professores_diciplina" class="form-select" required>
+              <option value="">---Selecione a Diciplina---</option>
+            </select>
+            <br>
+          </div>   
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="edit_professores_id" id="id">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn" style="background-color: #11101d; color: white;"
+            id="edit_aprofessores_action_button">Editar</button>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
 
 <script>
-  String.prototype.reverse = function(){
-  return this.split('').reverse().join(''); 
-};
-
-function mascaraMoeda(campo,evento){
-  var tecla = (!evento) ? window.event.keyCode : evento.which;
-  var valor  =  campo.value.replace(/[^\d]+/gi,'').reverse();
-  var resultado  = "";
-  var mascara = "##.###.###,##".reverse();
-  for (var x=0, y=0; x<mascara.length && y<valor.length;) {
-    if (mascara.charAt(x) != '#') {
-      resultado += mascara.charAt(x);
-      x++;
-    } else {
-      resultado += valor.charAt(y);
-      y++;
-      x++;
-    }
-  }
-  campo.value = resultado.reverse();
-}
 //menu
 const mobileScreen = window.matchMedia("(max-width: 990px )");
 $(document).ready(function () {
@@ -200,16 +216,32 @@ $(document).ready(function () {
     });
 });
 
-  $(document).ready(function () {
-
+$(document).ready(function () {
     load_data();
 
+      $.ajax({
+        url: "http://localhost:3000/diciplinas_data/diciplinas",
+        method: "GET",
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        success: function (response) {
+          response.data.map((diciplina) => {
+            $('#diciplina').append(`<option value="${diciplina.id}">${diciplina.nome}</option>`);
+            $('#edit_professores_diciplina').append(`<option value="${diciplina.id}">${diciplina.nome}</option>`);
+          })
+        },
+        error: function(xhr, status, error) { 
+          alert(error);
+        }
+      });
+   
     function load_data() {
       $.ajax({
-        url: "http://localhost:3000/professores_data/action",
+        url: "http://localhost:3000/professores_data/professores",
         method: "GET",
-        dataType: "JSON",
-        success: (data) => {
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        success: function (data) {
           var html = '';
           if (data.data.length > 0) {
             for (var count = 0; count < data.data.length; count++) {
@@ -217,7 +249,7 @@ $(document).ready(function () {
                             <tr>
                                 <td scope="row">`+ data.data[count].nome + `</td>
                                 <td scope="row">`+ data.data[count].bday + `</td>
-                                <td scope="row">&#36; `+ data.data[count].salary + `</td>
+                                <td scope="row">`+ data.data[count].salary + `</td>
                                 <td scope="row">`+ data.data[count].diciplinaId + `</td>
                                 <td class="bColuna"><button class="bExlcuir bx bx-pen edit" style="height: 30px;" data-id="`+data.data[count].id+`"></button></td>
                                 <td class="bColuna"><button class="bExlcuir delete" data-id="`+data.data[count].id+`">X</button></td>
@@ -229,7 +261,6 @@ $(document).ready(function () {
         }
       });
     }
-
     $('#add_data').click(function () {
       $('#modal_title').text('Cadastro de Professores');
       $('#professores_form')[0].reset(); 
@@ -237,11 +268,18 @@ $(document).ready(function () {
     });
     $('#professores_form').on('submit', function (event) {
       event.preventDefault();
+      const data = JSON.stringify({
+        nome: $('#nome').val(),
+        bday:$('#bday').val(),
+        salary:$('#salary').val(),
+        diciplina: $('#diciplina').val()
+      })
       $.ajax({
-        url: "http://localhost:3000/professores_data/action",
+        url: "http://localhost:3000/professores_data/professores",
         method: "POST",
-        data: $('#professores_form').serialize(),
+        data: data ,
         dataType: "json",
+        contentType:"application/json; charset=utf-8",
         beforeSend: function () {
           $('#action_button').attr('disabled', 'disabled');
         },
@@ -252,49 +290,80 @@ $(document).ready(function () {
           load_data();
           setTimeout(function () {
             $('#message').html('');
-          }, 5000);
+          }, 3000);
         }
-
       })
     });
     
+
     $(document).on('click', '.edit', function(){
       var id = $(this).data('id');
-      $('#modal_title').text('Editar Professor');
-      $('#action_button').text('Salvar');
-      $('#action_modal').modal('show');
-
+      
       $.ajax({
-        url:"http://localhost:3000/professores_data/action",
-        method: "POST",
-        data:{id:id},
-        dataType: "JSON",
-        success:(data) => {
-          $('#nome').val(data.nome);
-          $('#bday').val(data.bday);
-          $('#matricula').val(data.salary);
-          $('#cursos').val(data.diciplinaId);
-          $('#id').val(data.id);
+        url: `http://localhost:3000/professores_data/professores/${id}`,
+        method: "GET",
+        dataType: "json",
+        contentType:"application/json",
+        success:(data) =>{
+          console.log(data)
+          $('#edit_professores_nome').val(data.nome) 
+          $('#edit_professores_bday').val(data.bday);
+          $('#edit_professores_salary').val(data.salary);
+          $('#edit_professores_diciplina').val(data.diciplinaId);
+        },
+        error: function(xhr, status, error) { 
+          alert(error);
+        }
+      });
+   
+     
+      $('#edit_professores_action_button').text('Salvar');
+      $('#edit_modal').modal('show');
+      $('#edit_professores_form').on('submit', function (event) {
+      event.preventDefault();
+      const data = JSON.stringify({
+        nome: $('#edit_professores_nome').val(),
+        bday:$('#edit_professores_bday').val(),
+        salary:$('#edit_professores_salary').val(),
+        diciplina: $('#edit_professores_diciplina').val(),
+      })
+      $.ajax({
+        url: `http://localhost:3000/professores_data/professores/${id}`,
+        method: "PUT",
+        data: data ,
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        beforeSend: function () {
+          $('#action_button').attr('disabled', 'disabled');
+        },
+        success: (data) => {
+          $('#edit_professores_action_button').attr('disabled', false);
+          $('#message').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
+          $('#edit_modal').modal('hide');
+          load_data();
+          setTimeout(function () {
+            $('#message').html('');
+          }, 3000);
         }
       })
     });
-  
+    });
+   
     $(document).on('click', '.delete', function(){
       var id = $(this).data('id');
       if(confirm("Tem certeza que deseja excluir?")){
         $.ajax({
-          url: "http://localhost:3000/professores_data/action",
+          url: `http://localhost:3000/professores_data/professores/${id}`,
           method: "DELETE",
-          data:{id:id},
-          dataType: "JSON",
-          success:(data) => {
+          dataType: "json",
+          contentType:"application/json; charset=utf-8",
+          success:(data) => { 
             $('#message').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
             load_data();
             setTimeout(function () {
             $('#message').html('');
-          }, 5000);
+          }, 3000);
           }
-
         })
       }
     });

@@ -35,7 +35,7 @@
 
   <div class='dashboard'>
     <div class="dashboard-nav">
-      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src=""> <span>University</span></a></header>
+      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src="/images/icon.svg"><span style="margin-left: 1rem;">University</span></a></header>
         <nav class="dashboard-nav-list">
           <a href="#" class="dashboard-nav-item"><i class="bx bx-grid-alt"></i>Home</a>
             <div class='dashboard-nav-dropdown'>
@@ -51,7 +51,6 @@
                 <div class='dashboard-nav-dropdown-menu'>
                   <a href="/cursos_data" class="dashboard-nav-dropdown-item">Cursos</a>
                   <a href="/diciplinas_data" class="dashboard-nav-dropdown-item">Diciplinas</a>
-                  <a href="#"class="dashboard-nav-dropdown-item">Semestres</a>
             </div>
 
             <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i> Settings </a><a
@@ -67,7 +66,7 @@
             <div class='container' style="display: flex; flex-direction:column">
                 <div class='card'>
                     <div class='card-header'style="background-color: #11101d;">
-                        <h1 style="color:white;">Listagem de Cursos</h1>
+                        <h1 style="color:white;">Cursos</h1>
                         <span id="message"></span>
                     </div>
                     <div class='card-body'>
@@ -76,9 +75,7 @@
                             <thead>
                               <tr style="color:#11101d;">
                                 <th>Nome</th>
-                                <th>Alunos</th>
-                                <th>Diciplinas</th>
-                                <th>Semestres</th>
+                                <th>Q&ordm; Semestres</th>
                               </tr>
                             </thead>
                             <tbody></tbody>
@@ -86,6 +83,7 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -97,6 +95,7 @@
       <table class="table table-striped" id="cursos_data">
       </table>
     </div>
+    
   </div>
 
 </body>
@@ -130,20 +129,18 @@ $(document).ready(function () {
 
     function load_data() {
       $.ajax({
-        url: "http://localhost:3000/cursos_data/action",
+        url: "http://localhost:3000/cursos_data/cursos",
         method: "GET",
         dataType: "JSON",
         success: function (data) {
           var html = '';
-          var sql = "SELECT cursos.id, alunos.cursoIdFROM alunos, curso WHERE cursos.id = alunos.cursoId";
+          var sql = "SELECT cursos.id, alunos.cursoId FROM alunos, curso WHERE cursos.id = alunos.cursoId";
           if (data.data.length > 0) {
             for (var count = 0; count < data.data.length; count++) {
               html += `
                             <tr>
-                                <td scope="row">`+ data.data[count].nome + `</td>
-                                <td scope="row">`+ data.data[count].sql + `</td>
-                                <td scope="row">`+ data.data[count].diciplinaId + `</td>
-                                <td scope="row">`+ data.data[count].semestreId + `&ordm;</td>
+                                <td scope="row"><a href="#" style="text-decoration: none; color: #1101d;">`+ data.data[count].nome + `</a></td>
+                                <td scope="row">2 Semestres</td>
                             </tr>
                             `;
             }

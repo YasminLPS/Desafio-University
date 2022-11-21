@@ -10,7 +10,7 @@ router.get("/", function (req, res, next) {
 
 router.get("/alunos", function (req, res, next) {
 	var query =
-		"SELECT alunos.id,alunos.nome, alunos.bday, cursos.nome as cursoId, semestres.nome as semestreId, matricula FROM alunos";
+		"SELECT alunos.id,alunos.nome, alunos.bday, cursos.nome as cursoId, semestres.periodo as semestreId, matricula FROM alunos";
 	query += " INNER JOIN cursos ON cursos.id = alunos.cursoId";
 	query += " INNER JOIN semestres ON semestres.id = alunos.semestreId";
 

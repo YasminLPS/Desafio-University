@@ -35,7 +35,7 @@
 
   <div class='dashboard'>
     <div class="dashboard-nav">
-      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src=""> <span>University</span></a></header>
+      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href="/index"><img src="/images/icon.svg"><span style="margin-left: 1rem;">University</span></a></header>
         <nav class="dashboard-nav-list">
           <a href="#" class="dashboard-nav-item"><i class="bx bx-grid-alt"></i>Home</a>
             <div class='dashboard-nav-dropdown'>
@@ -51,7 +51,6 @@
                 <div class='dashboard-nav-dropdown-menu'>
                   <a href="/cursos_data" class="dashboard-nav-dropdown-item">Cursos</a>
                   <a href="/diciplinas_data" class="dashboard-nav-dropdown-item">Diciplinas</a>
-                  <a href="#"class="dashboard-nav-dropdown-item">Semestres</a>
             </div>
 
             <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i> Settings </a><a
@@ -76,7 +75,6 @@
                             <thead>
                               <tr style="color:#11101d;">
                                 <th>Nome</th>
-                                <th>Professores</th>
                                 <th>Curso Pertencente</th>
                                 <th>N&ordm; Semestre</th>
                               </tr>
@@ -92,9 +90,8 @@
 </div>
   <!--FIM Sidebar-->
 
-    <!--Inicio area cadastro-->
     <div class="content">
-      <table class="table table-striped" id=diciplinas_data">
+      <table class="table table-striped" id="diciplinas_data">
       </table>
     </div>
   </div>
@@ -124,15 +121,17 @@ $(document).ready(function () {
     });
 });
 
-  $(document).ready(function () {
+ 
+$(document).ready(function () {
 
     load_data();
 
     function load_data() {
       $.ajax({
-        url: "http://localhost:3000/diciplinas_data/action",
+        url: "http://localhost:3000/diciplinas_data/diciplinas",
         method: "GET",
-        dataType: "JSON",
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
         success: function (data) {
           var html = '';
           if (data.data.length > 0) {
@@ -140,7 +139,6 @@ $(document).ready(function () {
               html += `
                             <tr>
                                 <td scope="row">`+ data.data[count].nome + `</td>
-                                <td scope="row">`+ data.data[count].professoreId + `</td>
                                 <td scope="row">`+ data.data[count].cursoId + `</td>
                                 <td scope="row">`+ data.data[count].semestreId + `&ordm; semestre</td>
                             </tr>

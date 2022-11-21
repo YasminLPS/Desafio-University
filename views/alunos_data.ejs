@@ -36,7 +36,7 @@
 
   <div class='dashboard'>
     <div class="dashboard-nav">
-      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href=""><img src="/img/icon.svg"> <span>University</span></a></header>
+      <header><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><a href="/index"><img src="/images/icon.svg"><span style="margin-left: 1rem;">University</span></a></header>
         <nav class="dashboard-nav-list">
           <a href="#" class="dashboard-nav-item"><i class="bx bx-grid-alt"></i>Home</a>
             <div class='dashboard-nav-dropdown'>
@@ -52,10 +52,9 @@
                 <div class='dashboard-nav-dropdown-menu'>
                   <a href="/cursos_data" class="dashboard-nav-dropdown-item">Cursos</a>
                   <a href="/diciplinas_data" class="dashboard-nav-dropdown-item">Diciplinas</a>
-                  <a href="#"class="dashboard-nav-dropdown-item">Semestres</a>
             </div>
 
-            <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i> Settings </a><a
+            <a href="#" class="dashboard-nav-item"><i class="bx bx-cog"></i>Settings</a><a
                     href="#" class="dashboard-nav-item"><i class="bx bx-user"></i> Profile </a>
           <div class="nav-item-divider"></div>
           <a
@@ -85,7 +84,7 @@
                                 <th>Data de Nascimento</th>
                                 <th>Curso</th>
                                 <th>Semestre</th>
-                                <th>N&ordm; Matricula</th>
+                                <th>Matricula</th>
                                 <th></th>
                                 <th></th>
                               </tr>
@@ -135,18 +134,12 @@
             <label class="form-lab">Curso</label>
             <select name="cursos" id="cursos" class="form-select" required>
               <option selected>--- Selecione o Curso ---</option>
-              <option value="1">Sistema da Informação</option>
-              <option value="2">Web Design</option>
-              <option value="3">Ciência da Computação</option>
-              <option value="4">Inglês</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="form-lab">Semestre</label>
             <select name="semestre" id="semestre" class="form-select" required>
               <option value="">--- Selecione o Semestre ---</option>
-              <option value="1">1&ordm; semestre</option>
-              <option value="2">2&ordm; semestre</option>
 
             </select>
           </div>
@@ -241,6 +234,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     load_data();
+
       $.ajax({
         url: "http://localhost:3000/cursos_data/cursos",
         method: "GET",
@@ -263,8 +257,8 @@ $(document).ready(function () {
         contentType:"application/json; charset=utf-8",
         success: function (response) {
           response.data.map((semestre) => {
-            $('#semestre').append(`<option value="${semestre.id}">${semestre.nome}</option>`);
-            $('#edit_aluno_semestre').append(`<option value="${semestre.id}">${semestre.nome}</option>`);
+            $('#semestre').append(`<option value="${semestre.id}">${semestre.periodo}&ordm; Semestre</option>`);
+            $('#edit_aluno_semestre').append(`<option value="${semestre.id}">${semestre.periodo}&ordm; Semestre</option>`);
           })
         },
         error: function(xhr, status, error) { 
@@ -287,7 +281,7 @@ $(document).ready(function () {
                                 <td scope="row">`+ data.data[count].nome + `</td>
                                 <td scope="row">`+ data.data[count].bday + `</td>
                                 <td scope="row">`+ data.data[count].cursoId + `</td>
-                                <td scope="row">`+ data.data[count].semestreId + `</td>
+                                <td scope="row">`+ data.data[count].semestreId + `&ordm; Semestre</td>
                                 <td scope="row">`+ data.data[count].matricula + `</td>
                                 <td class="bColuna"><button class="bExlcuir bx bx-pen edit" style="height: 30px;" data-id="`+data.data[count].id+`"></button></td>
                                 <td class="bColuna"><button class="bExlcuir delete" data-id="`+data.data[count].id+`">X</button></td>
