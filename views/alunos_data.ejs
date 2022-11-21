@@ -167,6 +167,55 @@
     </div>
   </div>
 </div>
+<!--MODAL EDIÇÂO-->
+<div class="modal" tabindex="-1" id="edit_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="post" id="edit_aluno_form">
+        <div class="modal-header">
+          <h5 class="modal-title" id="edit_modal_title" style="color: #11101d;">Editar Aluno</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-lab">Nome Completo</label>
+            <input type="text" name="edit_aluno_nome" id="edit_aluno_nome" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Data de Nascimento</label>
+            <input type="date" name="edit_aluno_bday" id="edit_aluno_bday" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Curso</label>
+            <select name="edit_aluno_cursos" id="edit_aluno_cursos" class="form-select" required>
+              <option value="">--- Selecione o Curso ---</option>
+          </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">Semestre</label>
+            <select name="edit_aluno_semestre" id="edit_aluno_semestre" class="form-select" required>
+              <option value="">--- Selecione o Semestre ---</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-lab">N&ordm; Matricula</label>
+            <input type="text" name="edit_aluno_matricula" id="edit_aluno_matricula" class="form-control"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" maxlength="9"
+              required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="edit_aluno_id" id="id">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn" style="background-color: #11101d; color: white;"
+            id="edit_aluno_action_button">Editar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <script>
 //menu
@@ -190,15 +239,45 @@ $(document).ready(function () {
     });
 });
 
-  $(document).ready(function () {
-
+$(document).ready(function () {
     load_data();
-
+      $.ajax({
+        url: "http://localhost:3000/cursos_data/cursos",
+        method: "GET",
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        success: function (response) {
+          response.data.map((curso) => {
+            $('#cursos').append(`<option value="${curso.id}">${curso.nome}</option>`);
+            $('#edit_aluno_cursos').append(`<option value="${curso.id}">${curso.nome}</option>`);
+          })
+        },
+        error: function(xhr, status, error) { 
+          alert(error);
+        }
+      });
+      $.ajax({
+        url: "http://localhost:3000/semestre_data/semestres",
+        method: "GET",
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        success: function (response) {
+          response.data.map((semestre) => {
+            $('#semestre').append(`<option value="${semestre.id}">${semestre.nome}</option>`);
+            $('#edit_aluno_semestre').append(`<option value="${semestre.id}">${semestre.nome}</option>`);
+          })
+        },
+        error: function(xhr, status, error) { 
+          alert(error);
+        }
+      });
+   
     function load_data() {
       $.ajax({
-        url: "http://localhost:3000/alunos_data/action",
+        url: "http://localhost:3000/alunos_data/alunos",
         method: "GET",
-        dataType: "JSON",
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
         success: function (data) {
           var html = '';
           if (data.data.length > 0) {
@@ -220,7 +299,6 @@ $(document).ready(function () {
         }
       });
     }
-
     $('#add_data').click(function () {
       $('#modal_title').text('Cadastro de Alunos');
       $('#aluno_form')[0].reset(); 
@@ -228,11 +306,19 @@ $(document).ready(function () {
     });
     $('#aluno_form').on('submit', function (event) {
       event.preventDefault();
+      const data = JSON.stringify({
+        nome: $('#nome').val(),
+        bday:$('#bday').val(),
+        cursos:$('#cursos').val(),
+        matricula: $('#matricula').val(),
+        semestre: $('#semestre').val(),
+      })
       $.ajax({
-        url: "http://localhost:3000/alunos_data/action",
+        url: "http://localhost:3000/alunos_data/alunos",
         method: "POST",
-        data: $('#aluno_form').serialize(),
+        data: data ,
         dataType: "json",
+        contentType:"application/json; charset=utf-8",
         beforeSend: function () {
           $('#action_button').attr('disabled', 'disabled');
         },
@@ -243,50 +329,81 @@ $(document).ready(function () {
           load_data();
           setTimeout(function () {
             $('#message').html('');
-          }, 5000);
+          }, 3000);
         }
-
       })
     });
     
     $(document).on('click', '.edit', function(){
       var id = $(this).data('id');
-      $('#modal_title').text('Editar aluno');
-      $('#action_button').text('Salvar');
-      $('#action_modal').modal('show');
+      
       $.ajax({
-        url: "http://localhost:3000/alunos_data/action",
-        method: "PUT",
-        data: {id:id},
+        url: `http://localhost:3000/alunos_data/alunos/${id}`,
+        method: "GET",
         dataType: "json",
+        contentType:"application/json",
         success:(data) =>{
-          $('#name').val($(data).parent().parent().find('td:nth-child(1)').html());
-          $('#bday').val($(data).parent().parent().find('td:nth-child(1)').html());
-          $('#cursos').val($(data).parent().parent().find('td:nth-child(1)').html());
-          $('#semestre').val($(data).parent().parent().find('td:nth-child(1)').html());
-          $('#matricula').val($(data).parent().parent().find('td:nth-child(1)').html());
-          $('#id').val($(data).parent().parent().find('td:nth-child(1)').html());
+          console.log(data)
+          $('#edit_aluno_nome').val(data.nome) 
+          $('#edit_aluno_bday').val(data.bday);
+          $('#edit_aluno_cursos').val(data.cursoId);
+          $('#edit_aluno_semestre').val(data.semestreId);
+          $('#edit_aluno_matricula').val(data.matricula);
+        },
+        error: function(xhr, status, error) { 
+          alert(error);
         }
       });
+   
+     
+      $('#edit_aluno_action_button').text('Salvar');
+      $('#edit_modal').modal('show');
+      $('#edit_aluno_form').on('submit', function (event) {
+      event.preventDefault();
+      const data = JSON.stringify({
+        nome: $('#edit_aluno_nome').val(),
+        bday:$('#edit_aluno_bday').val(),
+        cursos:$('#edit_aluno_cursos').val(),
+        matricula: $('#edit_aluno_matricula').val(),
+        semestre: $('#edit_aluno_semestre').val(),
+      })
+      $.ajax({
+        url: `http://localhost:3000/alunos_data/alunos/${id}`,
+        method: "PUT",
+        data: data ,
+        dataType: "json",
+        contentType:"application/json; charset=utf-8",
+        beforeSend: function () {
+          $('#action_button').attr('disabled', 'disabled');
+        },
+        success: (data) => {
+          $('#edit_aluno_action_button').attr('disabled', false);
+          $('#message').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
+          $('#edit_modal').modal('hide');
+          load_data();
+          setTimeout(function () {
+            $('#message').html('');
+          }, 3000);
+        }
+      })
+    });
     });
    
     $(document).on('click', '.delete', function(){
       var id = $(this).data('id');
       if(confirm("Tem certeza que deseja excluir?")){
         $.ajax({
-          url: "http://localhost:3000/alunos_data/action",
+          url: `http://localhost:3000/alunos_data/alunos/${id}`,
           method: "DELETE",
-          data:{id:id},
-          dataType: "JSON",
-          success:(data) => {
-            console.log("CHEGUEI AQ")
+          dataType: "json",
+          contentType:"application/json; charset=utf-8",
+          success:(data) => { 
             $('#message').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
             load_data();
             setTimeout(function () {
             $('#message').html('');
-          }, 5000);
+          }, 3000);
           }
-
         })
       }
     });
